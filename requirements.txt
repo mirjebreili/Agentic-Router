@@ -1,15 +1,6 @@
-# Core LangGraph framework
+langchain
+langchain-openai
 langgraph
-
-# Pydantic for data validation and settings management
-pydantic
-
-# PyYAML for parsing the YAML configuration file
-pyyaml
-
-# HTTPX for asynchronous HTTP requests
 httpx
-
-# Required by 'langgraph dev' to run the server
-uvicorn
-fastapi
+pyyaml
+pydantic
