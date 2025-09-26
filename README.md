@@ -1,11 +1,13 @@
 # Agentic Router
 
+
 This project implements a simple agentic router using LangGraph. The router uses keyword matching to classify user input and forward it to the appropriate specialized agent based on a configuration file.
 
 ## Features
 
 - **Keyword-Based Routing**: Classifies user requests by searching for "gitlab" or "jira" in the input.
 - **Agent Discovery**: Automatically discovers the `assistant_id` from target agent services.
+
 - **Extensible Configuration**: Easily add or modify agents in `agents_config.yaml`.
 - **LangGraph Integration**: Exposes a `graph` object for use with `langgraph dev`.
 
@@ -17,7 +19,9 @@ agentic_router/
   ├── graph.py            # Exposes `graph` for langgraph dev
   ├── config.py           # Loads agents_config.yaml
   ├── nodes/
+
   │   ├── classify.py     # Chooses agent key with keyword matching
+
   │   ├── discover.py     # Queries target host:port to get assistant_id
   │   ├── forward.py      # Sends A2A JSON-RPC message/send
   │   └── format.py       # Returns response_text

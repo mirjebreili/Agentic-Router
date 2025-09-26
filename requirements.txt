@@ -1,3 +1,5 @@
+langchain
+langchain-openai
 langgraph
 httpx
 pyyaml
