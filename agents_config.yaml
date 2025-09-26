@@ -1,0 +1,48 @@
+# Configuration for the Agentic Router
+#
+# This file defines the target agents, discovery mechanisms, and operational parameters.
+# It is loaded at startup and can be hot-reloaded if the file is modified.
+
+agents:
+  gitlab:
+    host: "127.0.0.1"
+    port: 2024
+    name: "agent"                 # Assistant name to look for via /assistants/search
+    registry_enabled: false
+    # assistant_id can be specified here to bypass discovery.
+    # Example: assistant_id: "a1b2c3d4-e5f6-7890-1234-567890abcdef"
+    assistant_id: ""
+
+  jira:
+    host: "127.0.0.1"
+    port: 2025
+    name: "agent"
+    registry_enabled: true        # Use the registry to discover this agent
+    assistant_id: ""
+
+# The registry agent is used to discover other agents when `registry_enabled` is true.
+registry:
+  host: "127.0.0.1"
+  port: 2026
+  assistant_id: "registry-agent-uuid" # Static UUID for the registry agent
+
+# Defines the logic for choosing a target agent.
+routing:
+  # mode can be "keywords", "llm", or "semantic".
+  # "keywords": Route based on simple string matching (default).
+  # "llm": Route using a language model for classification (not implemented by default).
+  # "semantic": Route based on embedding similarity (not implemented by default).
+  mode: "keywords"
+
+  # If no agent is matched, the request can be sent to a default agent.
+  # Set to a key from the `agents` map, e.g., "jira". Leave empty to return an error.
+  default_agent: ""
+
+# HTTP client settings.
+timeouts:
+  http_seconds: 20
+
+# Retry policy for transient network errors.
+retries:
+  attempts: 2
+  backoff_seconds: 0.5
