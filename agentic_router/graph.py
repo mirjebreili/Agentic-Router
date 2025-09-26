@@ -1,38 +1,18 @@
 import logging
-from typing import TypedDict, Optional
 
-from langgraph.graph import StateGraph, END
+from langgraph.graph import END, StateGraph
 
-# Import the node functions from their respective modules
 from .nodes.classify import classify
 from .nodes.discover import discover
-from .nodes.forward import forward
 from .nodes.format import format_response
+from .nodes.forward import forward
+from .types import AgentState
 
 # Set up basic logging
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+logging.basicConfig(
+    level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+)
 logger = logging.getLogger(__name__)
-
-class AgentState(TypedDict):
-    """
-    Represents the state of the agentic router graph.
-
-    Attributes:
-        input_text: The initial user query.
-        agent_key: The key of the agent selected by the classification node (e.g., "gitlab").
-        assistant_id: The unique ID of the assistant, discovered from its service.
-        host: The hostname of the target agent service.
-        port: The port number of the target agent service.
-        thread_id: The conversation thread ID, for maintaining context.
-        response: The final text response from the agent.
-    """
-    input_text: str
-    agent_key: Optional[str]
-    assistant_id: Optional[str]
-    host: Optional[str]
-    port: Optional[int]
-    thread_id: Optional[str]
-    response: Optional[str]
 
 # Initialize the state graph
 workflow = StateGraph(AgentState)

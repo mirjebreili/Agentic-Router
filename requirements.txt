@@ -1,6 +1,5 @@
-langchain
-langchain-openai
 langgraph
+langgraph-cli[inmem]
 httpx
-pyyaml
 pydantic
+PyYAML

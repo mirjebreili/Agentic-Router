@@ -3,7 +3,8 @@ from typing import Dict, Any
 
 import httpx
 
-from agentic_router.config import AGENTS_CONFIG
+from ..config import AGENTS_CONFIG
+from ..types import AgentState
 
 # Set up basic logging
 logging.basicConfig(level=logging.INFO)
@@ -12,7 +13,8 @@ logger = logging.getLogger(__name__)
 # Create a reusable async HTTP client
 client = httpx.AsyncClient(timeout=10.0)
 
-async def discover(state: Dict[str, Any]) -> Dict[str, Any]:
+
+async def discover(state: AgentState) -> Dict[str, Any]:
     """
     Discovers the assistant_id for the selected agent by querying its endpoint.
 
@@ -30,9 +32,9 @@ async def discover(state: Dict[str, Any]) -> Dict[str, Any]:
     if not agent_config:
         raise ValueError(f"No configuration found for agent key: '{agent_key}'")
 
-    host = agent_config["host"]
-    port = agent_config["port"]
-    expected_name = agent_config["name"]
+    host = agent_config.host
+    port = agent_config.port
+    expected_name = agent_config.name
 
     url = f"http://{host}:{port}/assistants/search"
     logger.info(f"Discovering assistant_id for '{expected_name}' at {url}")

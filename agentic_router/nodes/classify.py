@@ -1,12 +1,14 @@
 import logging
 from typing import Dict, Any
 
+from ..types import AgentState
+
 # Set up basic logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
-async def classify(state: Dict[str, Any]) -> Dict[str, Any]:
+async def classify(state: AgentState) -> Dict[str, Any]:
     """
     Classifies the user input using keyword matching to determine the agent.
 
@@ -42,3 +44,5 @@ async def classify(state: Dict[str, Any]) -> Dict[str, Any]:
         raise ValueError("No matching agent found.")
 
     logger.info(f"Classified request for agent: '{agent_key}'")
+
+    return {"agent_key": agent_key}

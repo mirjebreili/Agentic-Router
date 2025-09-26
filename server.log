@@ -1,0 +1,17 @@
+INFO:langgraph_api.cli:
+
+        Welcome to
+
+╦  ┌─┐┌┐┌┌─┐╔═╗┬─┐┌─┐┌─┐┬ ┬
+║  ├─┤││││ ┬║ ╦├┬┘├─┤├─┘├─┤
+╩═╝┴ ┴┘└┘└─┘╚═╝┴└─┴ ┴┴  ┴ ┴
+
+- 🚀 API: [36mhttp://127.0.0.1:8001[0m
+- 🎨 Studio UI: [36mhttps://smith.langchain.com/studio/?baseUrl=http://127.0.0.1:8001[0m
+- 📚 API Docs: [36mhttp://127.0.0.1:8001/docs[0m
+
+This in-memory server is designed for development and testing.
+For production use, please use LangGraph Platform.
+
+
+[2m2025-09-26T12:37:20.225474Z[0m [[32m[1minfo     [0m] [1m4 changes detected            [0m [[0m[1m[34mwatchfiles.main[0m][0m [36mapi_variant[0m=[35mlocal_dev[0m [36mlanggraph_api_version[0m=[35m0.4.28[0m [36mthread_name[0m=[35mMainThread[0m

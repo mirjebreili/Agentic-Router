@@ -1,18 +1,25 @@
-import os
 from pathlib import Path
-from typing import Any, Dict
+from typing import Dict
 
 import yaml
+from pydantic import ValidationError
 
-def load_config() -> Dict[str, Any]:
+from .types import AgentsConfig, ToolConfig
+
+
+def load_and_validate_config() -> Dict[str, ToolConfig]:
     """
-    Loads the agent configuration from the `agents_config.yaml` file.
+    Loads and validates the agent configurations from agents_config.yaml.
 
-    The path to the YAML file is resolved relative to this script's location.
+    This function reads the YAML file, parses it, and validates its
+    structure using the Pydantic models defined in `agentic_router.types`.
 
     Returns:
-        A dictionary containing the agent configurations.
-        Returns an empty dictionary if the file is not found or is invalid.
+        A dictionary of validated agent configurations.
+
+    Raises:
+        FileNotFoundError: If agents_config.yaml is not found.
+        ValueError: If the configuration is invalid or fails validation.
     """
     config_path = Path(__file__).parent / "agents_config.yaml"
     if not config_path.is_file():
@@ -20,12 +27,20 @@ def load_config() -> Dict[str, Any]:
 
     try:
         with open(config_path, "r") as f:
-            config = yaml.safe_load(f)
-            return config.get("agents", {})
-    except yaml.YAMLError as e:
-        # In a real application, you might want to log this error.
-        raise ValueError(f"Error parsing YAML configuration: {e}") from e
+            config_data = yaml.safe_load(f)
 
-# Load the configuration once when the module is imported.
-# Other modules can import this variable directly.
-AGENTS_CONFIG: Dict[str, Any] = load_config()
+        # Validate the entire structure
+        validated_config = AgentsConfig(**config_data)
+        return validated_config.agents
+
+    except yaml.YAMLError as e:
+        raise ValueError(f"Error parsing YAML in {config_path}: {e}") from e
+    except ValidationError as e:
+        raise ValueError(f"Invalid configuration in {config_path}: {e}") from e
+    except Exception as e:
+        raise ValueError(f"An unexpected error occurred while loading the configuration: {e}") from e
+
+
+# Load and validate the configuration when the module is imported.
+# Other modules can import this validated configuration directly.
+AGENTS_CONFIG: Dict[str, ToolConfig] = load_and_validate_config()

@@ -4,12 +4,15 @@ from typing import Dict, Any, Optional
 
 import httpx
 
+from ..types import AgentState
+
 # Set up basic logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 # Create a reusable async HTTP client
 client = httpx.AsyncClient(timeout=10.0)
+
 
 def build_json_rpc_payload(input_text: str, thread_id: Optional[str]) -> Dict[str, Any]:
     """Builds the JSON-RPC 2.0 payload for the A2A message/send method."""
@@ -24,7 +27,8 @@ def build_json_rpc_payload(input_text: str, thread_id: Optional[str]) -> Dict[st
         "id": str(uuid.uuid4()),
     }
 
-async def forward(state: Dict[str, Any]) -> Dict[str, Any]:
+
+async def forward(state: AgentState) -> Dict[str, Any]:
     """
     Forwards the user's request to the discovered agent via JSON-RPC.
 

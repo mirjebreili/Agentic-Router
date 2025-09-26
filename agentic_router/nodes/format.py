@@ -1,11 +1,14 @@
 import logging
 from typing import Dict, Any
 
+from ..types import AgentState
+
 # Set up basic logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-async def format_response(state: Dict[str, Any]) -> Dict[str, Any]:
+
+async def format_response(state: AgentState) -> Dict[str, Any]:
     """
     Formats the final response for the user.
 
