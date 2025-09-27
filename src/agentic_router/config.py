@@ -1,3 +1,7 @@
+"""Load and validate configuration for downstream agents."""
+
+from __future__ import annotations
+
 from pathlib import Path
 from typing import Dict
 
