@@ -4,8 +4,8 @@ agents:
     description: "Handles GitLab project queries"
     host: "127.0.0.1"
     port: 2024
-  jira:
-    name: "Jira Assistant"
-    description: "Handles Jira ticket queries"
-    host: "127.0.0.1"
-    port: 2025
+  Pishool:
+    name: "Pishool"
+    description: "Handles Opensearch queriesticket queries"
+    host: "https://logagent-part2.partdp.ai
+    port: 443

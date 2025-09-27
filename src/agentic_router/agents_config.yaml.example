@@ -1,0 +1,11 @@
+agents:
+  gitlab:
+    name: "GitLab Assistant"
+    description: "Handles GitLab project queries"
+    host: "127.0.0.1"
+    port: 2024
+  jira:
+    name: "Jira Assistant"
+    description: "Handles Jira ticket queries"
+    host: "127.0.0.1"
+    port: 2025
