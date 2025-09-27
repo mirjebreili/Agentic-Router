@@ -9,7 +9,7 @@ from typing import Any, Dict, Optional
 import httpx
 
 from ..types import AgentState
-from .utils import extract_latest_user_message
+from .utils import build_service_url, extract_latest_user_message
 
 
 logger = logging.getLogger(__name__)
@@ -47,7 +47,7 @@ async def forward(state: AgentState) -> Dict[str, Any]:
     thread_id = state.get("active_thread_id")
 
 
-    url = f"http://{host}:{port}/a2a/{assistant_id}"
+    url = build_service_url(host, port, f"/a2a/{assistant_id}")
     payload = build_json_rpc_payload(input_text, thread_id)
     headers = {"Accept": "application/json"}
 

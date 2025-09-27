@@ -16,7 +16,9 @@ class ToolConfig(BaseModel):
     )
     host: str = Field(
         ...,
-        description="The hostname or IP address of the agent's service (without protocol).",
+        description=(
+            "The hostname, IP address, or fully qualified base URL for the agent's service."
+        ),
     )
     port: int = Field(..., description="The port number for the agent's service.")
     keywords: list[str] = Field(
