@@ -11,6 +11,7 @@ import httpx
 from ..types import AgentState
 from .utils import extract_latest_user_message
 
+
 logger = logging.getLogger(__name__)
 
 
@@ -31,7 +32,9 @@ def build_json_rpc_payload(input_text: str, thread_id: Optional[str]) -> Dict[st
 async def forward(state: AgentState) -> Dict[str, Any]:
     """Forward the user's request to the discovered agent via JSON-RPC."""
 
+
     required_keys = ["assistant_id", "host", "port", "agent_key"]
+
     if not all(key in state for key in required_keys):
         missing_keys = [key for key in required_keys if key not in state]
         raise ValueError(f"Missing required keys in state: {missing_keys}")
@@ -42,6 +45,7 @@ async def forward(state: AgentState) -> Dict[str, Any]:
     agent_key = state["agent_key"]
     input_text = extract_latest_user_message(state["messages"])
     thread_id = state.get("active_thread_id")
+
 
     url = f"http://{host}:{port}/a2a/{assistant_id}"
     payload = build_json_rpc_payload(input_text, thread_id)
@@ -87,6 +91,7 @@ async def forward(state: AgentState) -> Dict[str, Any]:
             payload["active_thread_id"] = new_thread_id
 
         return payload
+
 
     except httpx.RequestError as exc:
         logger.error("HTTP request failed while forwarding to agent: %s", exc)

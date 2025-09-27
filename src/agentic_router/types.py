@@ -1,9 +1,7 @@
 """Type definitions used throughout the Agentic Router graph."""
 
 from __future__ import annotations
-
 from typing import Dict, Optional
-
 from langgraph.graph import MessagesState
 from pydantic import BaseModel, Field
 
@@ -25,6 +23,7 @@ class AgentsConfig(BaseModel):
 
 class AgentState(MessagesState, total=False):
     """State container passed between nodes in the LangGraph workflow."""
+
 
     agent_key: Optional[str]
     assistant_id: Optional[str]

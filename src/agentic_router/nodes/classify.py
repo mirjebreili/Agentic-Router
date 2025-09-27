@@ -8,6 +8,7 @@ from typing import Any, Dict
 from ..types import AgentState
 from .utils import extract_latest_user_message
 
+
 logger = logging.getLogger(__name__)
 
 
@@ -34,3 +35,4 @@ async def classify(state: AgentState) -> Dict[str, Any]:
 
     logger.info("Classified request for agent: '%s'", agent_key)
     return {"agent_key": agent_key, "active_thread_id": active_thread_id}
+

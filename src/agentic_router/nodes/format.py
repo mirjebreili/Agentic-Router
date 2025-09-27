@@ -7,12 +7,15 @@ from typing import Any, Dict
 
 from langchain_core.messages import AIMessage
 
+
 from ..types import AgentState
 
 logger = logging.getLogger(__name__)
 
 
+
 async def format_response(state: AgentState) -> Dict[str, Any]:
+
     """Format the response payload emitted by the workflow."""
     logger.info("Formatting final response.")
 
