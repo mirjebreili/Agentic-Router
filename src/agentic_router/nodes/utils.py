@@ -1,7 +1,9 @@
 """Utility helpers shared between node implementations."""
 
 from __future__ import annotations
-
+from typing import Optional
+from uuid import UUID
+import httpx
 import logging
 from typing import Iterable
 from urllib.parse import urlparse, urlunparse
@@ -107,3 +109,54 @@ def build_service_url(host: str, port: int, endpoint: str) -> str:
 
     return urlunparse((scheme, netloc, path, "", "", ""))
 
+
+
+async def fetch_assistant_id(
+    url: str,
+    expected_name: Optional[str],
+    api_key: Optional[str] = None,
+    timeout: float = 10.0,
+) -> str:
+    """Return the assistant UUID from /assistants/search (by name if provided)."""
+    headers = {"Content-Type": "application/json"}
+    if api_key:
+        headers["X-Api-Key"] = api_key
+
+    async with httpx.AsyncClient(timeout=timeout) as client:
+        resp = await client.post(url, headers=headers, json={})
+        resp.raise_for_status()
+
+    data = resp.json()
+    if isinstance(data, dict) and isinstance(data.get("items"), list):
+        records = data["items"]
+    elif isinstance(data, list):
+        records = data
+    else:
+        raise ValueError("Invalid response format: expected a list or an object with 'items'.")
+
+    def pick_id(rec: dict) -> Optional[str]:
+        return rec.get("assistant_id") or rec.get("id")
+
+    assistant_id: Optional[str] = None
+    if expected_name:
+        for rec in records:
+            if isinstance(rec, dict) and rec.get("name") == expected_name:
+                assistant_id = pick_id(rec)
+                break
+        if assistant_id is None:
+            raise RuntimeError(f"Assistant '{expected_name}' not found at {url}.")
+    else:
+        if len(records) != 1:
+            raise RuntimeError(f"Found {len(records)} assistants; provide expected_name to disambiguate.")
+        assistant_id = pick_id(records[0])
+
+    if not isinstance(assistant_id, str):
+        raise ValueError("Assistant found but missing 'assistant_id' or 'id' field.")
+
+    # Validate UUID shape to avoid “Invalid assistant ID: must be a UUID”
+    try:
+        UUID(assistant_id)
+    except Exception:
+        raise ValueError(f"Assistant ID is not a valid UUID: {assistant_id}")
+
+    return assistant_id
