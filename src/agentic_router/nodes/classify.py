@@ -5,6 +5,7 @@ from __future__ import annotations
 import logging
 from typing import Any, Dict
 
+from ..config import AGENTS_CONFIG
 from ..types import AgentState
 from .utils import extract_latest_user_message
 
@@ -21,10 +22,11 @@ async def classify(state: AgentState) -> Dict[str, Any]:
     lower_input = input_text.lower()
     agent_key = None
 
-    if "gitlab" in lower_input:
-        agent_key = "gitlab"
-    elif "jira" in lower_input:
-        agent_key = "jira"
+    for key, config in AGENTS_CONFIG.items():
+        keywords = config.keywords or [key]
+        if any(keyword.lower() in lower_input for keyword in keywords):
+            agent_key = key
+            break
 
     if not agent_key:
         logger.error("No matching agent found for the input.")

@@ -10,9 +10,19 @@ class ToolConfig(BaseModel):
     """Pydantic model for a single agent's configuration."""
 
     name: str = Field(..., description="The name of the agent.")
-    description: str = Field(..., description="A brief description of the agent's purpose.")
-    host: str = Field(..., description="The hostname or IP address of the agent's service.")
+    description: str = Field(
+        ...,
+        description="A brief description of the agent's purpose.",
+    )
+    host: str = Field(
+        ...,
+        description="The hostname or IP address of the agent's service (without protocol).",
+    )
     port: int = Field(..., description="The port number for the agent's service.")
+    keywords: list[str] = Field(
+        default_factory=list,
+        description="List of keywords that should route requests to this agent.",
+    )
 
 
 class AgentsConfig(BaseModel):
