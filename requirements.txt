@@ -1,5 +1,2 @@
-langgraph
-langgraph-cli[inmem]
-httpx
-pydantic
-PyYAML
+-e .
+
