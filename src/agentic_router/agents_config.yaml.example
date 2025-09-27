@@ -4,8 +4,14 @@ agents:
     description: "Handles GitLab project queries"
     host: "127.0.0.1"
     port: 2024
+    keywords:
+      - gitlab
+      - merge request
   jira:
     name: "Jira Assistant"
     description: "Handles Jira ticket queries"
     host: "127.0.0.1"
     port: 2025
+    keywords:
+      - jira
+      - ticket

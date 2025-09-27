@@ -99,17 +99,26 @@ agents:
     description: "Handles GitLab project queries"
     host: "127.0.0.1"
     port: 2024
+    keywords:
+      - gitlab
+      - merge request
+      - pipeline
   jira:
     name: "Jira Assistant"
     description: "Handles Jira ticket queries"
     host: "127.0.0.1"
     port: 2025
+    keywords:
+      - jira
+      - ticket
+      - sprint
 ```
 
 - **`agents`**: The root key.
-- **`gitlab` / `jira`**: These are the `agent_key`s. The `classify` node uses these keys to identify the agent. The keyword search is hard-coded to match these keys.
+- **`gitlab` / `jira`**: These are the `agent_key`s. The `classify` node uses these keys to identify the agent. The keyword search is configurable via the optional `keywords` list.
 - **`name`**: The official name of the assistant. This is used during the discovery phase to find the correct `assistant_id`.
 - **`host` / `port`**: The address of the target agent's service.
+- **`keywords`**: Optional list of keywords that should be matched during the classification step. If omitted, the agent key itself is used as the default keyword.
 
 ### Adding a New Agent
 
@@ -127,19 +136,7 @@ agents:
     ```
 
 2.  **Update the `classify` Node**:
-    Open `src/agentic_router/nodes/classify.py` and add a condition to recognize keywords for your new agent.
-
-    ```python
-    # In classify.py
-    # ...
-    if "gitlab" in lower_input:
-        agent_key = "gitlab"
-    elif "jira" in lower_input:
-        agent_key = "jira"
-    elif "notion" in lower_input: # Add this
-        agent_key = "notion"
-    # ...
-    ```
+    Add relevant keywords under the agent definition. The classifier automatically uses the configured keywords without further code changes.
 
 ## Troubleshooting
 
