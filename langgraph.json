@@ -1,7 +1,7 @@
 {
   "$schema": "https://langgra.ph/schema.json",
-  "dependencies": ["."],
+  "dependencies": ["./src"],
   "graphs": {
-    "agentic_router": "agentic_router.graph:graph"
+    "agentic_router": "./src/agentic_router/graph.py:graph"
   }
 }

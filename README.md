@@ -11,22 +11,24 @@ This project implements an agentic router using LangGraph, designed for full com
 
 ## Project Structure
 
-The project follows LangGraph's recommended Python module structure:
+The project follows LangGraph's recommended Python module structure under `src/` so the CLI can automatically load the graph:
 
 ```
-agentic_router/
-  ├── __init__.py
-  ├── graph.py            # Exports the `graph` object for the LangGraph CLI
-  ├── config.py           # Loads and validates agents_config.yaml
-  ├── types.py            # Contains Pydantic models for state and configuration
-  ├── nodes/
-  │   ├── __init__.py
-  │   ├── classify.py     # Classifies input and selects an agent
-  │   ├── discover.py     # Discovers the agent's assistant_id
-  │   ├── forward.py      # Forwards the request to the target agent
-  │   └── format.py       # Formats the final response
-  └── agents_config.yaml  # Agent definitions
-requirements.txt
+src/
+  agentic_router/
+    ├── __init__.py        # Exposes the compiled graph object
+    ├── agents_config.yaml # Agent definitions
+    ├── config.py          # Loads and validates agents_config.yaml
+    ├── graph.py           # Builds and compiles the LangGraph workflow
+    ├── types.py           # Contains Pydantic models for state and configuration
+    └── nodes/
+        ├── __init__.py
+        ├── classify.py    # Classifies input and selects an agent
+        ├── discover.py    # Discovers the agent's assistant_id
+        ├── forward.py     # Forwards the request to the target agent
+        └── format.py      # Formats the final response
+langgraph.json
+pyproject.toml
 README.md
 ```
 
@@ -46,7 +48,7 @@ README.md
 
 3.  **Install dependencies:**
     ```bash
-    pip install -r requirements.txt
+    pip install -e .
     ```
 
 ## How to Run and Test
@@ -57,7 +59,7 @@ The `langgraph dev` command starts a local development server with a web interfa
 
 From the project's root directory, run:
 ```bash
-langgraph dev -m agentic_router.graph:graph
+langgraph dev -m ./src/agentic_router/graph.py:graph
 ```
 The server will be accessible at `http://127.0.0.1:8000`. You can use the web UI to send requests and visualize the graph's execution flow.
 
@@ -70,7 +72,7 @@ The `langgraph dcli` command-line tool is ideal for scripting, testing, and dire
 Use `invoke` to send a single request and receive the final response.
 
 ```bash
-langgraph dcli -m agentic_router.graph:graph invoke \
+langgraph dcli -m ./src/agentic_router/graph.py:graph invoke \
   --input '{"input_text": "can you check jira for the status of ticket T-123?"}'
 ```
 
@@ -79,14 +81,14 @@ langgraph dcli -m agentic_router.graph:graph invoke \
 Use `astream-events` to see the full sequence of events as the graph processes the request, including state changes at each node.
 
 ```bash
-langgraph dcli -m agentic_router.graph:graph astream-events \
+langgraph dcli -m ./src/agentic_router/graph.py:graph astream-events \
   --input '{"input_text": "what are the latest commits in the gitlab project?"}' \
   --output-keys 'response'
 ```
 
 ## Configuration
 
-Agent routing behavior is defined in `agentic_router/agents_config.yaml`.
+Agent routing behavior is defined in `src/agentic_router/agents_config.yaml`.
 
 ### Example `agents_config.yaml`
 
@@ -125,7 +127,7 @@ agents:
     ```
 
 2.  **Update the `classify` Node**:
-    Open `agentic_router/nodes/classify.py` and add a condition to recognize keywords for your new agent.
+    Open `src/agentic_router/nodes/classify.py` and add a condition to recognize keywords for your new agent.
 
     ```python
     # In classify.py
@@ -141,7 +143,7 @@ agents:
 
 ## Troubleshooting
 
-- **`FileNotFoundError: agents_config.yaml not found`**: Ensure the YAML file exists in the `agentic_router/` directory and that you are running `langgraph` commands from the project's root directory.
+- **`FileNotFoundError: agents_config.yaml not found`**: Ensure the YAML file exists in the `src/agentic_router/` directory and that you are running `langgraph` commands from the project's root directory.
 - **`ValidationError` on startup**: Check `agents_config.yaml` for missing fields (`name`, `host`, `port`) or incorrect data types (e.g., `port` should be a number).
 - **`No matching agent found`**: The `classify` node could not find any of its hard-coded keywords (e.g., "gitlab," "jira") in your input text. Make sure your input contains one of these keywords.
 - **`Discovery failed: Assistant not found`**: The router connected to the agent's service but could not find an assistant with the expected `name`. Verify the `name` in `agents_config.yaml` matches the name configured in the target agent.

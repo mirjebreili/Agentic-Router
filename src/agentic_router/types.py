@@ -1,4 +1,8 @@
-from typing import TypedDict, Optional, Dict
+"""Type definitions used throughout the Agentic Router graph."""
+
+from __future__ import annotations
+
+from typing import Dict, Optional, TypedDict
 
 from pydantic import BaseModel, Field
 
@@ -18,19 +22,8 @@ class AgentsConfig(BaseModel):
     agents: Dict[str, ToolConfig]
 
 
-class AgentState(TypedDict):
-    """
-    Represents the state of the agentic router graph.
-
-    Attributes:
-        input_text: The initial user query.
-        agent_key: The key of the agent selected by the classification node (e.g., "gitlab").
-        assistant_id: The unique ID of the assistant, discovered from its service.
-        host: The hostname of the target agent service.
-        port: The port number of the target agent service.
-        thread_id: The conversation thread ID, for maintaining context.
-        response: The final text response from the agent.
-    """
+class AgentState(TypedDict, total=False):
+    """State container passed between nodes in the LangGraph workflow."""
 
     input_text: str
     agent_key: Optional[str]
