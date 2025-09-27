@@ -9,6 +9,7 @@ import httpx
 
 from ..config import AGENTS_CONFIG
 from ..types import AgentState
+from .utils import build_service_url
 
 logger = logging.getLogger(__name__)
 
@@ -27,7 +28,7 @@ async def discover(state: AgentState) -> Dict[str, Any]:
     port = agent_config.port
     expected_name = agent_config.name
 
-    url = f"http://{host}:{port}/assistants/search"
+    url = build_service_url(host, port, "/assistants/search")
     logger.info("Discovering assistant_id for '%s' at %s", expected_name, url)
 
     try:
