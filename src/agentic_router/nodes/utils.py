@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import logging
 from typing import Iterable
-from urllib.parse import urljoin, urlparse, urlunparse
+from urllib.parse import urlparse, urlunparse
 
 from langchain_core.messages import BaseMessage
 
@@ -58,37 +58,52 @@ def build_service_url(host: str, port: int, endpoint: str) -> str:
     already includes one.
     """
 
-    parsed = urlparse(host)
+    if not host:
+        raise ValueError("Host cannot be empty.")
 
-    has_protocol = parsed.scheme and "://" in host
+    host = host.strip()
 
-    if has_protocol:
-        netloc = parsed.netloc
-        path = parsed.path
+    lower = host.lower()
+    if lower.startswith("http:") and not lower.startswith("http://"):
+        remainder = host.split(":", 1)[1].lstrip("/")
+        host = f"http://{remainder}"
+    elif lower.startswith("https:") and not lower.startswith("https://"):
+        remainder = host.split(":", 1)[1].lstrip("/")
+        host = f"https://{remainder}"
+    elif lower.startswith("http//"):
+        host = f"http://{host[6:].lstrip('/')}"
+    elif lower.startswith("https//"):
+        host = f"https://{host[7:].lstrip('/')}"
+    elif lower.startswith("http://") or lower.startswith("https://"):
+        scheme, remainder = host.split("://", 1)
+        host = f"{scheme.lower()}://{remainder}"
 
-        if not netloc:
+    if "://" in host:
+        parsed = urlparse(host)
+        if not parsed.netloc:
             raise ValueError("Host must include a hostname when a protocol is provided.")
-
-        if parsed.port is None:
-            tail = netloc.split("]")[-1]
-            if ":" not in tail:
-                netloc = f"{netloc}:{port}"
-
-        base = urlunparse((parsed.scheme, netloc, path.rstrip("/"), "", "", ""))
     else:
-        pseudo = urlparse(f"//{host}")
-        netloc = pseudo.netloc or pseudo.path or host
-
-        if not netloc:
+        parsed = urlparse(f"http://{host}")
+        if not parsed.netloc:
             raise ValueError("Host cannot be empty.")
 
-        if pseudo.port is None and ":" not in netloc.split(']')[-1]:
-            # Append the configured port only when the host value does not already provide
-            # one. ``split(']')[-1]`` keeps IPv6 literals intact while examining any
-            # trailing ``:port`` section outside of the closing bracket.
-            netloc = f"{netloc}:{port}"
+    scheme = parsed.scheme or "http"
+    netloc = parsed.netloc
+    base_path = parsed.path or ""
 
-        base = urlunparse(("http", netloc, "", "", "", ""))
+    tail = netloc.split(']')[-1]
+    if parsed.port is None and ":" not in tail:
+        netloc = f"{netloc}:{port}"
 
-    return urljoin(base.rstrip("/") + "/", endpoint.lstrip("/"))
+    base_segments = [segment for segment in base_path.strip("/").split("/") if segment]
+    endpoint_clean = endpoint.strip()
+    endpoint_segments = [segment for segment in endpoint_clean.strip("/").split("/") if segment]
+    segments = base_segments + endpoint_segments
+
+    if segments:
+        path = "/" + "/".join(segments)
+    else:
+        path = "/" if endpoint_clean.startswith("/") or base_path.endswith("/") else ""
+
+    return urlunparse((scheme, netloc, path, "", "", ""))
 
