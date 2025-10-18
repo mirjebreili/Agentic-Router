@@ -6,11 +6,11 @@ import logging
 
 from langgraph.graph import END, StateGraph
 
-from agentic_router.nodes.classify import classify
-from agentic_router.nodes.discover import discover
-from agentic_router.nodes.format import format_response
-from agentic_router.nodes.forward import forward
-from agentic_router.types import AgentState
+from src.nodes.classify import classify
+from src.nodes.discover import discover
+from src.nodes.format import format_response
+from src.nodes.forward import forward
+from src.state import AgentState
 
 logger = logging.getLogger(__name__)
 

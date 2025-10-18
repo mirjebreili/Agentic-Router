@@ -3,11 +3,13 @@
 from __future__ import annotations
 
 import logging
+import pathlib
 from typing import Any, Dict
 
-from ..config import AGENTS_CONFIG
-from ..types import AgentState
-from .utils import extract_latest_user_message
+import yaml
+
+from src.state import AgentState
+from src.nodes.utils import extract_latest_user_message
 
 
 logger = logging.getLogger(__name__)
@@ -22,7 +24,11 @@ async def classify(state: AgentState) -> Dict[str, Any]:
     lower_input = input_text.lower()
     agent_key = None
 
-    for key, config in AGENTS_CONFIG.items():
+    config_path = pathlib.Path(__file__).parent.parent / "agents_config.yaml"
+    with open(config_path, "r") as f:
+        agents_config = yaml.safe_load(f)
+
+    for key, config in agents_config.items():
         keywords = config.keywords or [key]
         if any(keyword.lower() in lower_input for keyword in keywords):
             agent_key = key

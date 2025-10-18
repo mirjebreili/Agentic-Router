@@ -1,0 +1,16 @@
+README.md
+pyproject.toml
+src/agentic_router.egg-info/PKG-INFO
+src/agentic_router.egg-info/SOURCES.txt
+src/agentic_router.egg-info/dependency_links.txt
+src/agentic_router.egg-info/requires.txt
+src/agentic_router.egg-info/top_level.txt
+src/llm/__init__.py
+src/llm/client.py
+src/nodes/__init__.py
+src/nodes/classify.py
+src/nodes/discover.py
+src/nodes/format.py
+src/nodes/forward.py
+src/nodes/utils.py
+tests/test_utils.py

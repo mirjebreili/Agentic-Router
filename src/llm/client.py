@@ -3,10 +3,10 @@ from typing import Any, Dict
 
 from langchain_core.messages import HumanMessage
 from langchain_openai import ChatOpenAI
-from config.settings import get_settings
+from config.settings import settings
 
 def get_chat_model(**overrides: Any) -> ChatOpenAI:
-    cfg = get_settings()
+    cfg = settings
     params = {
         "model": cfg.model,
         "api_key": cfg.openai_api_key or "dummy",
